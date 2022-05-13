@@ -1,0 +1,22 @@
+# HEADER SECTION (each line must be preceded by a #)
+#
+# 1st line describes the problem type, must be one of the following:
+#   - "knapsack"
+#   - "scheduling"
+#
+# 2nd line describes the problem constraint, which is the maximum weight (for knapsack) or the maximum time (for scheduling).
+#
+# 3rd to nth lines describe the items, each line must have the following format:
+#   - for knapsack problems:    <weight> <value>
+#   - for scheduling problems:  <value> <start> <end>
+#
+# Note: You can use this website to verify your solution: https://augustineaykara.github.io/Knapsack-Calculator/
+#
+knapsack
+50
+10 5
+20 10
+5 15
+30 20
+10 10
+
