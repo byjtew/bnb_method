@@ -14,6 +14,7 @@ typedef struct {
 		int type;
 		int constraint; // Problem constraint
 		int n_items;    // Number of items
+		int n_slots;    // Number of n_slots (for scheduling problems only)
 		int *weights;   // Weights/Duration of every item
 		int *values;    // Values of the items (1 for every item in a scheduling problem)
 } problem_t;

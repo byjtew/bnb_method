@@ -7,11 +7,12 @@ int safe_int_fscanf(FILE *fp, int *ret) {
 	return scanf_ret;
 }
 
-problem_t *problem_create(int type, int constraint, int n_items, int *weights, int *values) {
+problem_t *problem_create(int type, int constraint, int n_items, int n_slots, int *weights, int *values) {
 	problem_t *problem = malloc(sizeof(problem_t));
 	problem->type = type;
 	problem->constraint = constraint;
 	problem->n_items = n_items;
+	problem->n_slots = n_slots;
 
 	// Copy the weights and values
 	problem->weights = malloc(sizeof(int) * constraint);
@@ -36,7 +37,7 @@ problem_t *problem_create_from_file(const char *filename) {
 	fseek(file, -1, SEEK_CUR);
 
 	// Read the problem type
-	int problem_type, nb_slots;
+	int problem_type, nb_slots = 0;
 	char type[32];
 	fscanf(file, "%s", type);
 	if (strcmp(type, "scheduling") == 0) {
@@ -76,7 +77,12 @@ problem_t *problem_create_from_file(const char *filename) {
 
 	fclose(file);
 
-	return problem_create(problem_type, constraint, count, weights, values);
+	problem_t *pb = problem_create(problem_type, constraint, count, nb_slots, weights, values);
+
+	free(weights);
+	free(values);
+
+	return pb;
 }
 
 char *problem_type_to_string(int type) {
