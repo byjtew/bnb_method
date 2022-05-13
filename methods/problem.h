@@ -33,15 +33,14 @@ typedef struct {
 		int status;
 		int *item_statuses;
 		problem_t *problem;
-} knapsack_solution_t;
+} solution_t;
 
-knapsack_solution_t *knapsack_solution_create(problem_t *problem);
+solution_t *solution_create(problem_t *problem);
 
-void knapsack_solution_print(knapsack_solution_t *solution);
+void solution_print(solution_t *solution);
 
-void knapsack_solution_set_status(knapsack_solution_t *solution, int status);
+void solution_set_status(solution_t *solution, int status);
 
-void knapsack_solution_destroy(knapsack_solution_t *solution);
-
+void solution_destroy(solution_t *solution);
 
 #endif //BNB_METHOD_PROBLEM_H

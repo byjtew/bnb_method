@@ -8,15 +8,15 @@
 #
 # 3rd to nth lines describe the items, each line must have the following format:
 #   - for knapsack problems:    <weight> <value>
-#   - for scheduling problems:  <value> <duration>
+#   - for scheduling problems:  <duration>
 #
 # Note: You can use this website to verify your solution: https://augustineaykara.github.io/Knapsack-Calculator/
 #
-knapsack
+scheduling 2
 50
-10 5
-20 10
-5 15
-30 20
-10 10
+10
+20
+5
+30
+10
 

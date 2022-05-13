@@ -36,13 +36,12 @@ problem_t *problem_create_from_file(const char *filename) {
 	fseek(file, -1, SEEK_CUR);
 
 	// Read the problem type
-	int problem_type;
+	int problem_type, nb_slots;
 	char type[32];
 	fscanf(file, "%s", type);
 	if (strcmp(type, "scheduling") == 0) {
 		problem_type = SCHEDULING_PROBLEM;
-		fprintf(stderr, "Scheduling problems are not supported yet.\n");
-		exit(1);
+		safe_int_fscanf(file, &nb_slots);
 	} else if (strcmp(type, "knapsack") == 0) {
 		problem_type = KNAPSACK_PROBLEM;
 		printf("Reading knapsack problem\n");
@@ -61,32 +60,41 @@ problem_t *problem_create_from_file(const char *filename) {
 	int count = 0;
 	while (1) {
 		int ret = safe_int_fscanf(file, &weights[count]);
-		if (ret == EOF) break;
+		if (ret == EOF) goto end_read;
 
-		ret = safe_int_fscanf(file, &values[count]);
-		if (ret == EOF) break;
+		if (problem_type == KNAPSACK_PROBLEM) {
+			ret = safe_int_fscanf(file, &values[count]);
+			if (ret == EOF) goto end_read;
+		} else
+			values[count] = 1;
 
 		count++;
 		weights = realloc(weights, sizeof(int) * (count + 1));
 		values = realloc(values, sizeof(int) * (count + 1));
 	}
+	end_read:;
 
 	fclose(file);
 
 	return problem_create(problem_type, constraint, count, weights, values);
 }
 
-char* problem_type_to_string(int type) {
+char *problem_type_to_string(int type) {
 	switch (type) {
-		case SCHEDULING_PROBLEM: return "scheduling";
-		case KNAPSACK_PROBLEM: return "knapsack";
-		default: return "unknown";
+		case SCHEDULING_PROBLEM:
+			return "scheduling";
+		case KNAPSACK_PROBLEM:
+			return "knapsack";
+		default:
+			return "unknown";
 	}
 }
 
 void problem_print(problem_t *problem) {
 	printf("* Problem type: %s\n", problem_type_to_string(problem->type));
 	printf("* Constraint: %d\n", problem->constraint);
+	if (problem->type == SCHEDULING_PROBLEM)
+		printf("* Number of slots: %d\n", problem->n_items);
 	printf("* Number of items: %d\n", problem->n_items);
 	for (int i = 0; i < problem->n_items; i++) {
 		printf("\tItem %d: {weight %.2d,  value %.2d}\n", i, problem->weights[i], problem->values[i]);

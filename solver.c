@@ -119,10 +119,10 @@ int compute_lower_bound(const node_t *n, const problem_t *pb) {
 	return total_value;
 }
 
-knapsack_solution_t *solve_knapsack(problem_t *problem) {
+solution_t *solve_knapsack(problem_t *problem) {
 	assert(problem->type == KNAPSACK_PROBLEM);
 
-	knapsack_solution_t *solution = knapsack_solution_create(problem);
+	solution_t *solution = solution_create(problem);
 
 	int lower_bound = 0;
 
@@ -183,3 +183,14 @@ knapsack_solution_t *solve_knapsack(problem_t *problem) {
 	squeue_destroy(tree);
 	return solution;
 }
+
+solution_t *solve_scheduling(problem_t *problem) {
+	assert(problem->type == KNAPSACK_PROBLEM);
+
+	solution_t *solution = solution_create(problem);
+
+	fprintf(stderr, "Scheduleing problem not implemented yet\n");
+
+	return solution;
+}
+

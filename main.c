@@ -1,5 +1,4 @@
 #include <stdio.h>
-#include "queue.h"
 #include "problem.h"
 #include "solver.h"
 
@@ -19,13 +18,11 @@ int main(int argc, char *argv[]) {
 
 	problem_print(problem);
 
-
-	knapsack_solution_t *knapsackSolution = solve_knapsack(problem);
-
+	solution_t *solution = (problem->type == KNAPSACK_PROBLEM) ? solve_knapsack(problem) : solve_scheduling(problem);
 
 	// Memory de-allocation(s)
 	problem_destroy(problem);
-	knapsack_solution_destroy(knapsackSolution);
+	solution_destroy(solution);
 
 	return 0;
 }
