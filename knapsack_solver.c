@@ -100,7 +100,7 @@ solution_t *solve_knapsack(problem_t *problem) {
 		node_t_destroy(node);
 	}
 
-	if (optimal_node->upper_bound < (float) lower_bound) {
+	if (optimal_node->upper_bound < (float) lower_bound || lower_bound == 0) {
 		info_printf("** No solution found, lower bound = %d\n", lower_bound);
 		solution->status = INFEASIBLE;
 	} else {
@@ -115,7 +115,7 @@ solution_t *solve_knapsack(problem_t *problem) {
 
 	for (int i = 0; i < optimal_node->n_items; i++)
 		solution->item_statuses[i] = optimal_node->items_states[i];
-	
+
 	node_t_destroy(root);
 	node_t_destroy(optimal_node);
 	squeue_destroy(tree);

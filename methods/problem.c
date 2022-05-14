@@ -4,6 +4,10 @@ int safe_int_fscanf(FILE *fp, int *ret) {
 	char str_int[10];
 	int scanf_ret = fscanf(fp, "%s", str_int);
 	*ret = (int) strtol(str_int, NULL, 10);
+	if(*ret < 0) {
+		fprintf(stderr, "Error: negative number in input file\n");
+		exit(1);
+	}
 	return scanf_ret;
 }
 
@@ -43,6 +47,10 @@ problem_t *problem_create_from_file(const char *filename) {
 	if (strcmp(type, "scheduling") == 0) {
 		problem_type = SCHEDULING_PROBLEM;
 		safe_int_fscanf(file, &nb_slots);
+		if(nb_slots <= 0) {
+			fprintf(stderr, "Invalid number of slots: %d, must greater than 0\n", nb_slots);
+			exit(1);
+		}
 	} else if (strcmp(type, "knapsack") == 0) {
 		problem_type = KNAPSACK_PROBLEM;
 		printf("Reading knapsack problem\n");
