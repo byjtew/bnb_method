@@ -2,7 +2,7 @@
 
 
 float knapsack_compute_upper_bound(node_t *n, problem_t *pb) {
-	float upperBound = 0;
+	float upper_bound = 0;
 	int rest_weight = pb->constraint;
 
 	int *is_picked = calloc(n->n_items, sizeof(int));
@@ -11,20 +11,21 @@ float knapsack_compute_upper_bound(node_t *n, problem_t *pb) {
 		int idx = pick_max_ratio_item(pb, is_picked);
 		if (idx >= 0 && n->items_states[idx] != ITEM_NOT_SELECTED) {
 			if (pb->weights[idx] <= rest_weight) {
-				upperBound += (float) pb->values[idx];
+				upper_bound += (float) pb->values[idx];
 				rest_weight -= pb->weights[idx];
 				continue;
 			} else {
 				float ratio = ((float) pb->values[idx]) / ((float) pb->weights[idx]);
-				upperBound += (float) rest_weight * ratio;
-				return upperBound;
+				upper_bound += (float) rest_weight * ratio;
+				free(is_picked);
+				return upper_bound;
 			}
 		}
 	}
 
 	free(is_picked);
 
-	return upperBound;
+	return upper_bound;
 }
 
 int knapsack_compute_lower_bound(const node_t *n, const problem_t *pb) {
@@ -62,10 +63,11 @@ solution_t *solve_knapsack(problem_t *problem) {
 	while (!squeue_is_empty(tree)) {
 		node_t *node = (node_t *) squeue_dequeue(tree);
 		if (node->upper_bound < (float) lower_bound) {
-			printf("\tXX Discarding node %d with upper bound %f < %d\n", expanded_nodes, node->upper_bound, lower_bound);
+			verbose_printf("\tXX Discarding node %d with upper bound %f < %d\n", expanded_nodes, node->upper_bound,
+			               lower_bound);
 			continue;
 		}
-		printf("\t-- Expanding node %d with upper bound %f\n", expanded_nodes, node->upper_bound);
+		verbose_printf("\t-- Expanding node %d with upper bound %f\n", expanded_nodes, node->upper_bound);
 
 		if (node->next_item_index == problem->n_items) {
 			int lb = knapsack_compute_lower_bound(node, problem);
@@ -73,9 +75,9 @@ solution_t *solve_knapsack(problem_t *problem) {
 				lower_bound = lb;
 				node_t_destroy(optimal_node);
 				optimal_node = node_t_copy(node);
-				printf("\t-- New lower bound: %d\n", lower_bound);
+				verbose_printf("\t-- New lower bound: %d\n", lower_bound);
 			} else if (lb == INFEASIBLE) {
-				printf("\t-- Node infeasible, lb = %d\n", lb);
+				verbose_printf("\t-- Node infeasible, lb = %d\n", lb);
 			}
 		} else {
 			int next_item_index = node->next_item_index;
@@ -98,16 +100,25 @@ solution_t *solve_knapsack(problem_t *problem) {
 		node_t_destroy(node);
 	}
 
-	printf("Expanded nodes: %d\n", expanded_nodes);
+	if (optimal_node->upper_bound < (float) lower_bound) {
+		info_printf("** No solution found, lower bound = %d\n", lower_bound);
+		solution->status = INFEASIBLE;
+	} else {
+		solution->status = OPTIMAL;
+		info_printf("** Expanded nodes: %d\n", expanded_nodes);
+		// Print the optimal solution
+		info_printf("** Optimal solution: %d\n", lower_bound);
+		for (int i = 0; i < optimal_node->n_items; i++)
+			info_printf("%s ", state_to_string(optimal_node->items_states[i]));
 
-	// Print the optimal solution
-	printf("\n** Optimal solution: %d\n", lower_bound);
+	}
+
 	for (int i = 0; i < optimal_node->n_items; i++)
-		printf("%s ", state_to_string(optimal_node->items_states[i]));
-
-
+		solution->item_statuses[i] = optimal_node->items_states[i];
+	
 	node_t_destroy(root);
 	node_t_destroy(optimal_node);
 	squeue_destroy(tree);
+
 	return solution;
 }

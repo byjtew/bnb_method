@@ -9,20 +9,31 @@
 
 #pragma region Node class
 
-#define ITEM_UNDEFINED -1
-#define ITEM_SELECTED -2
-#define ITEM_NOT_SELECTED -3
+#define ITEM_NOT_ATTRIBUTED -1
+
+#define ITEM_UNDEFINED 0
+#define ITEM_SELECTED 1
+#define ITEM_NOT_SELECTED 2
 
 typedef struct {
 		float upper_bound;
 		int next_item_index;
 		int *items_states;
+		int *items_attributions; // for scheduling problem only
 		int n_items;
 } node_t;
 
 node_t *node_t_create(const problem_t *problem);
 void *node_t_copy(const void *elem);
 void node_t_destroy(void *node);
+
+/** Printf overload (Debug only)
+ */
+void verbose_printf(const char *format, ...);
+
+/** Printf overload (Debug & Release)
+ */
+void info_printf(const char *format, ...);
 
 #pragma endregion
 

@@ -39,7 +39,7 @@ problem_t *problem_create_from_file(const char *filename) {
 	// Read the problem type
 	int problem_type, nb_slots = 0;
 	char type[32];
-	fscanf(file, "%s", type);
+	int type_str_length = fscanf(file, "%s", type);
 	if (strcmp(type, "scheduling") == 0) {
 		problem_type = SCHEDULING_PROBLEM;
 		safe_int_fscanf(file, &nb_slots);
@@ -100,7 +100,7 @@ void problem_print(problem_t *problem) {
 	printf("* Problem type: %s\n", problem_type_to_string(problem->type));
 	printf("* Constraint: %d\n", problem->constraint);
 	if (problem->type == SCHEDULING_PROBLEM)
-		printf("* Number of slots: %d\n", problem->n_items);
+		printf("* Number of slots: %d\n", problem->n_slots);
 	printf("* Number of items: %d\n", problem->n_items);
 	for (int i = 0; i < problem->n_items; i++) {
 		printf("\tItem %d: {weight %.2d,  value %.2d}\n", i, problem->weights[i], problem->values[i]);
