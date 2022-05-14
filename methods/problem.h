@@ -8,15 +8,15 @@
 /** Problems **/
 
 #define KNAPSACK_PROBLEM 0
-#define SCHEDULING_PROBLEM 1
+#define N_KNAPSACK_PROBLEM 1
 
 typedef struct {
 		int type;
 		int constraint; // Problem constraint
 		int n_items;    // Number of items
-		int n_slots;    // Number of n_slots (for scheduling problems only)
+		int n_slots;    // Number of n_slots (for N_KNAPSACK_PROBLEM only)
 		int *weights;   // Weights/Duration of every item
-		int *values;    // Values of the items (1 for every item in a scheduling problem)
+		int *values;    // Values of the items
 } problem_t;
 
 problem_t *problem_create_from_file(const char *filename);

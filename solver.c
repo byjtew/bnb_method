@@ -8,7 +8,7 @@ node_t *node_t_create(const problem_t *problem) {
 	node->n_items = problem->n_items;
 	node->items_states = (int *) malloc(node->n_items * sizeof(int));
 	memset(node->items_states, ITEM_UNDEFINED, node->n_items * sizeof(int));
-	if (problem->type == SCHEDULING_PROBLEM) {
+	if (problem->type == N_KNAPSACK_PROBLEM) {
 		node->items_attributions = (int *) malloc(node->n_items * sizeof(int));
 		memset(node->items_attributions, ITEM_NOT_ATTRIBUTED, node->n_items * sizeof(int));
 	} else {

@@ -1,6 +1,6 @@
 #include "solver.h"
 
-float scheduling_compute_upper_bound(node_t *n, problem_t *pb) {
+float n_knapsack_compute_upper_bound(node_t *n, problem_t *pb) {
 	float *upper_bounds = (float *) calloc(pb->n_slots, sizeof(float));
 	int *rest_weights = malloc(pb->n_slots * sizeof(int));
 	memset(rest_weights, pb->constraint, pb->n_slots * sizeof(int));
@@ -12,7 +12,7 @@ float scheduling_compute_upper_bound(node_t *n, problem_t *pb) {
 		if (idx >= 0 && n->items_states[idx] != ITEM_NOT_SELECTED) {
 			int slot_idx = n->items_attributions[idx];
 			if (pb->weights[idx] <= rest_weights[slot_idx]) {
-				upper_bounds[slot_idx]++;
+				upper_bounds[slot_idx] += (float) pb->values[idx];
 				rest_weights[slot_idx] -= pb->weights[idx];
 			} else {
 				upper_bounds[slot_idx] += (float) rest_weights[slot_idx] / (float) pb->weights[idx];
@@ -33,7 +33,7 @@ float scheduling_compute_upper_bound(node_t *n, problem_t *pb) {
 	return max_upper_bound;
 }
 
-void print_node_scheduling(const node_t *n, const problem_t *pb, void(*print_func)(const char *, ...)) {
+void print_node_n_knapsack(const node_t *n, const problem_t *pb, void(*print_func)(const char *, ...)) {
 	int *total_values = calloc(pb->n_slots, sizeof(int));
 	int *total_weights = calloc(pb->n_slots, sizeof(int));
 	int *jobs_per_slot = calloc(pb->n_slots, sizeof(int));
@@ -41,7 +41,7 @@ void print_node_scheduling(const node_t *n, const problem_t *pb, void(*print_fun
 	for (int i = 0; i < n->n_items; i++) {
 		if (n->items_states[i] == ITEM_NOT_SELECTED) continue;
 		int slot_idx = n->items_attributions[i];
-		total_values[slot_idx]++;
+		total_values[slot_idx] += pb->values[i];
 		total_weights[slot_idx] += pb->weights[i];
 		jobs_per_slot[slot_idx]++;
 	}
@@ -73,7 +73,7 @@ void print_node_scheduling(const node_t *n, const problem_t *pb, void(*print_fun
 	free(jobs_per_slot);
 }
 
-int scheduling_compute_lower_bound(const node_t *n, const problem_t *pb) {
+int n_knapsack_compute_lower_bound(const node_t *n, const problem_t *pb) {
 	int *current_constraints = calloc(pb->n_slots, sizeof(int)); // Current constraints, per slot
 	for (int i = 0; i < pb->n_slots; i++) current_constraints[i] = pb->constraint;
 	int *values = calloc(pb->n_slots, sizeof(int)); // Values of the items, per slot
@@ -84,7 +84,7 @@ int scheduling_compute_lower_bound(const node_t *n, const problem_t *pb) {
 		int slot_idx = n->items_attributions[i];
 		if (current_constraints[slot_idx] < pb->weights[i]) return INFEASIBLE;
 		current_constraints[slot_idx] -= pb->weights[i];
-		values[slot_idx]++;
+		values[slot_idx] += pb->values[i];
 
 	}
 
@@ -109,9 +109,9 @@ int scheduling_compute_lower_bound(const node_t *n, const problem_t *pb) {
 }
 
 
-solution_t *solve_scheduling(problem_t *problem) {
-	verbose_printf("Solving scheduling problem...\n");
-	assert(problem->type == SCHEDULING_PROBLEM);
+solution_t *solve_n_knapsack(problem_t *problem) {
+	verbose_printf("Solving n-knapsack problem...\n");
+	assert(problem->type == N_KNAPSACK_PROBLEM);
 
 	solution_t *solution = solution_create(problem);
 
@@ -122,7 +122,7 @@ solution_t *solve_scheduling(problem_t *problem) {
 	node_t *optimal_node = node_t_create(problem);
 	node_t *root = node_t_create(problem);
 	root->next_item_index = 0;
-	root->upper_bound = scheduling_compute_upper_bound(root, problem);
+	root->upper_bound = n_knapsack_compute_upper_bound(root, problem);
 	squeue_enqueue(tree, root);
 	node_t_destroy(root);
 	int expanded_nodes = 0;
@@ -132,10 +132,10 @@ solution_t *solve_scheduling(problem_t *problem) {
 		if (node->upper_bound < (float) lower_bound) continue;
 
 		if (node->next_item_index == problem->n_items) {
-			int lb = scheduling_compute_lower_bound(node, problem);
+			int lb = n_knapsack_compute_lower_bound(node, problem);
 			// Print this node in cyan
 			verbose_printf("lower_bound: %d\n", lb);
-			print_node_scheduling(node, problem, verbose_printf);
+			print_node_n_knapsack(node, problem, verbose_printf);
 
 			if (lb != INFEASIBLE && lb > lower_bound) {
 				lower_bound = lb;
@@ -149,7 +149,7 @@ solution_t *solve_scheduling(problem_t *problem) {
 				selected->items_states[next_item_index] = ITEM_SELECTED;
 				selected->items_attributions[next_item_index] = m;
 				selected->next_item_index++;
-				selected->upper_bound = scheduling_compute_upper_bound(selected, problem);
+				selected->upper_bound = n_knapsack_compute_upper_bound(selected, problem);
 				squeue_enqueue(tree, selected);
 				node_t_destroy(selected);
 				expanded_nodes++;
@@ -158,7 +158,7 @@ solution_t *solve_scheduling(problem_t *problem) {
 			discarded->items_states[next_item_index] = ITEM_NOT_SELECTED;
 			discarded->items_attributions[next_item_index] = ITEM_NOT_ATTRIBUTED;
 			discarded->next_item_index++;
-			discarded->upper_bound = scheduling_compute_upper_bound(discarded, problem);
+			discarded->upper_bound = n_knapsack_compute_upper_bound(discarded, problem);
 			squeue_enqueue(tree, discarded);
 			node_t_destroy(discarded);
 			expanded_nodes++;
@@ -181,7 +181,7 @@ solution_t *solve_scheduling(problem_t *problem) {
 			info_printf("%d ", optimal_node->items_attributions[i]);
 		info_printf("\n");
 
-		print_node_scheduling(optimal_node, problem, info_printf);
+		print_node_n_knapsack(optimal_node, problem, info_printf);
 
 		solution->status = OPTIMAL;
 		for(int i = 0; i < optimal_node->n_items; i++)

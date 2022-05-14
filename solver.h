@@ -19,7 +19,7 @@ typedef struct {
 		float upper_bound;
 		int next_item_index;
 		int *items_states;
-		int *items_attributions; // for scheduling problem only
+		int *items_attributions; // for n_knapsack problem only
 		int n_items;
 } node_t;
 
@@ -47,6 +47,6 @@ int pick_max_ratio_item(const problem_t *problem, const int *is_picked);
 
 solution_t *solve_knapsack(problem_t *problem);
 
-solution_t *solve_scheduling(problem_t *problem);
+solution_t *solve_n_knapsack(problem_t *problem);
 
 #endif //BNB_METHOD_SOLVER_H

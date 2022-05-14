@@ -18,7 +18,7 @@ int main(int argc, char *argv[]) {
 
 	problem_print(problem);
 
-	solution_t *solution = (problem->type == KNAPSACK_PROBLEM) ? solve_knapsack(problem) : solve_scheduling(problem);
+	solution_t *solution = (problem->type == KNAPSACK_PROBLEM) ? solve_knapsack(problem) : solve_n_knapsack(problem);
 
 	// Memory de-allocation(s)
 	problem_destroy(problem);

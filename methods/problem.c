@@ -4,7 +4,7 @@ int safe_int_fscanf(FILE *fp, int *ret) {
 	char str_int[10];
 	int scanf_ret = fscanf(fp, "%s", str_int);
 	*ret = (int) strtol(str_int, NULL, 10);
-	if(*ret < 0) {
+	if (*ret < 0) {
 		fprintf(stderr, "Error: negative number in input file\n");
 		exit(1);
 	}
@@ -43,11 +43,11 @@ problem_t *problem_create_from_file(const char *filename) {
 	// Read the problem type
 	int problem_type, nb_slots = 0;
 	char type[32];
-	int type_str_length = fscanf(file, "%s", type);
-	if (strcmp(type, "scheduling") == 0) {
-		problem_type = SCHEDULING_PROBLEM;
+	fscanf(file, "%s", type);
+	if (strcmp(type, "n-knapsack") == 0) {
+		problem_type = N_KNAPSACK_PROBLEM;
 		safe_int_fscanf(file, &nb_slots);
-		if(nb_slots <= 0) {
+		if (nb_slots <= 0) {
 			fprintf(stderr, "Invalid number of slots: %d, must greater than 0\n", nb_slots);
 			exit(1);
 		}
@@ -71,11 +71,8 @@ problem_t *problem_create_from_file(const char *filename) {
 		int ret = safe_int_fscanf(file, &weights[count]);
 		if (ret == EOF) goto end_read;
 
-		if (problem_type == KNAPSACK_PROBLEM) {
-			ret = safe_int_fscanf(file, &values[count]);
-			if (ret == EOF) goto end_read;
-		} else
-			values[count] = 1;
+		ret = safe_int_fscanf(file, &values[count]);
+		if (ret == EOF) goto end_read;
 
 		count++;
 		weights = realloc(weights, sizeof(int) * (count + 1));
@@ -95,8 +92,8 @@ problem_t *problem_create_from_file(const char *filename) {
 
 char *problem_type_to_string(int type) {
 	switch (type) {
-		case SCHEDULING_PROBLEM:
-			return "scheduling";
+		case N_KNAPSACK_PROBLEM:
+			return "n-knapsack";
 		case KNAPSACK_PROBLEM:
 			return "knapsack";
 		default:
@@ -107,7 +104,7 @@ char *problem_type_to_string(int type) {
 void problem_print(problem_t *problem) {
 	printf("* Problem type: %s\n", problem_type_to_string(problem->type));
 	printf("* Constraint: %d\n", problem->constraint);
-	if (problem->type == SCHEDULING_PROBLEM)
+	if (problem->type == N_KNAPSACK_PROBLEM)
 		printf("* Number of slots: %d\n", problem->n_slots);
 	printf("* Number of items: %d\n", problem->n_items);
 	for (int i = 0; i < problem->n_items; i++) {
