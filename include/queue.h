@@ -1,3 +1,8 @@
+/** Auteur: Benjamin Lozes
+ *  Classe: M1 CHPS
+ */
+
+
 #ifndef BND_METHOD_QUEUE_H
 #define BND_METHOD_QUEUE_H
 

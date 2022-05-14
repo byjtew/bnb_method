@@ -1,3 +1,8 @@
+/** Auteur: Benjamin Lozes
+ *  Classe: M1 CHPS
+ */
+
+
 #include <stdarg.h>
 #include "solver.h"
 

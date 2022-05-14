@@ -1,3 +1,8 @@
+/** Auteur: Benjamin Lozes
+ *  Classe: M1 CHPS
+ */
+
+
 #include "solver.h"
 
 float n_knapsack_compute_upper_bound(node_t *n, problem_t *pb) {

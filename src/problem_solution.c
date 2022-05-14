@@ -1,3 +1,8 @@
+/** Auteur: Benjamin Lozes
+ *  Classe: M1 CHPS
+ */
+
+
 #include "problem.h"
 
 solution_t *solution_create(problem_t *problem) {

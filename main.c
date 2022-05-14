@@ -1,3 +1,8 @@
+/** Auteur: Benjamin Lozes
+ *  Classe: M1 CHPS
+ */
+
+
 #include <stdio.h>
 #include "problem.h"
 #include "solver.h"

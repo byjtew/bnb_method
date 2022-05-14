@@ -1,3 +1,8 @@
+/** Auteur: Benjamin Lozes
+ *  Classe: M1 CHPS
+ */
+
+
 #ifndef BNB_METHOD_PROBLEM_H
 #define BNB_METHOD_PROBLEM_H
 

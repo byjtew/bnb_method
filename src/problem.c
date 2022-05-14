@@ -1,3 +1,8 @@
+/** Auteur: Benjamin Lozes
+ *  Classe: M1 CHPS
+ */
+
+
 #include "problem.h"
 
 int safe_int_fscanf(FILE *fp, int *ret) {
