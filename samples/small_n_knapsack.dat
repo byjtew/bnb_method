@@ -10,12 +10,15 @@
 #
 # Note: You can use this website to verify your solution: https://augustineaykara.github.io/Knapsack-Calculator/
 #
-n-knapsack 2
+n-knapsack 4
 60
-10 5
+50 5
 20 10
 5 15
-30 20
+47 20
 10 10
-
+20 10
+8 15
+52 20
+17 10
 
