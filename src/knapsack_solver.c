@@ -110,7 +110,7 @@ solution_t *solve_knapsack(problem_t *problem) {
 		info_printf("** Optimal solution: %d\n", lower_bound);
 		for (int i = 0; i < optimal_node->n_items; i++)
 			info_printf("%s ", state_to_string(optimal_node->items_states[i]));
-
+		info_printf("\n");
 	}
 
 	for (int i = 0; i < optimal_node->n_items; i++)
